@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mystic Whisper | 西方神秘学占卜</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #1a0b2e; color: #e0d7ee; overflow-x: hidden; }
+        .font-mystic { font-family: 'Cinzel', serif; }
+        .mystic-gradient { background: radial-gradient(circle at center, #2e1065 0%, #1a0b2e 100%); }
+        .gold-border { border: 1px solid rgba(212, 175, 55, 0.3); }
+        .gold-text { color: #d4af37; }
+        .card-glow:hover { box-shadow: 0 0 20px rgba(139, 92, 246, 0.4); border-color: #d4af37; }
+        /* 简易动画 */
+        @keyframes purple-glow {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.1); }
+        }
+        .animate-glow { animation: purple-glow 8s infinite; }
+    </style>
+</head>
+<body class="mystic-gradient min-h-screen">
+
+    <div class="fixed inset-0 pointer-events-none">
+        <div class="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-[#4a306d] rounded-full blur-[120px] animate-glow"></div>
+        <div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-[#2e1065] rounded-full blur-[100px] opacity-50"></div>
+    </div>
+
+    <nav class="relative z-10 flex justify-center space-x-8 py-8 border-b border-white/10 backdrop-blur-md">
+        <a href="#" class="gold-text tracking-widest font-mystic uppercase border-b border-[#d4af37]">Tarot</a>
+        <a href="#" class="hover:text-white transition tracking-widest font-mystic uppercase">Astrology</a>
+        <a href="#" class="hover:text-white transition tracking-widest font-mystic uppercase">Runes</a>
+    </nav>
+
+    <main class="relative z-10 max-w-5xl mx-auto px-6 py-20 text-center">
+        <header class="mb-16">
+            <h1 class="text-5xl font-mystic gold-text mb-4 tracking-[0.2em]">MYSTIC WHISPER</h1>
+            <p class="italic text-gray-400">倾听群星与塔罗的静谧低语</p>
+        </header>
+
+        <div id="divination-area" class="flex flex-col items-center">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div onclick="drawCard()" class="w-48 h-80 bg-[#4a306d]/20 rounded-2xl gold-border cursor-pointer card-glow transition-all duration-500 flex items-center justify-center group">
+                    <div class="w-40 h-72 border border-white/5 rounded-xl flex items-center justify-center">
+                        <span class="text-4xl opacity-20 group-hover:opacity-50 transition">✨</span>
+                    </div>
+                </div>
+                <div onclick="drawCard()" class="w-48 h-80 bg-[#4a306d]/20 rounded-2xl gold-border cursor-pointer card-glow transition-all duration-500 flex items-center justify-center group transform translate-y-[-10px]">
+                    <div class="w-40 h-72 border border-white/5 rounded-xl flex items-center justify-center">
+                        <span class="text-4xl opacity-20 group-hover:opacity-50 transition">🌙</span>
+                    </div>
+                </div>
+                <div onclick="drawCard()" class="w-48 h-80 bg-[#4a306d]/20 rounded-2xl gold-border cursor-pointer card-glow transition-all duration-500 flex items-center justify-center group">
+                    <div class="w-40 h-72 border border-white/5 rounded-xl flex items-center justify-center">
+                        <span class="text-4xl opacity-20 group-hover:opacity-50 transition">🔮</span>
+                    </div>
+                </div>
+            </div>
+            
+            <p id="loading-text" class="hidden mt-12 text-[#d4af37] animate-pulse italic">正在连接以太能量...</p>
+        </div>
+
+        <div id="result-screen" class="hidden max-w-2xl mx-auto mt-10 p-8 rounded-3xl bg-[#2d1b4d]/80 border border-[#d4af37]/40 backdrop-blur-xl">
+            <h2 id="card-name" class="text-2xl gold-text font-mystic mb-4"></h2>
+            <div class="text-left space-y-6">
+                <div>
+                    <p class="text-xs gold-text uppercase tracking-widest opacity-60">核心启示</p>
+                    <p id="card-meaning" class="text-lg mt-1"></p>
+                </div>
+                <div>
+                    <p class="text-xs gold-text uppercase tracking-widest opacity-60">行动建议</p>
+                    <p id="card-advice" class="text-gray-300 italic mt-1"></p>
+                </div>
+            </div>
+            <button onclick="resetApp()" class="mt-8 px-8 py-2 border border-[#d4af37] gold-text hover:bg-[#d4af37] hover:text-black transition-all font-mystic">重新开始仪式</button>
+        </div>
+    </main>
+
+    <footer class="mt-20 py-10 text-center opacity-30 text-xs tracking-[0.5em]">
+        © 2026 MYSTIC WHISPER • NO EASTERN ELEMENTS
+    </footer>
+
+    <script>
+        const cards = [
+            { name: "The Star (星星)", meaning: "宁静的希望与灵感之源。", advice: "现在是治愈旧伤痛、相信未来可能性的最佳时刻。" },
+            { name: "The Moon (月亮)", meaning: "直觉、梦境与潜意识的波动。", advice: "不安感来源于幻象，静待迷雾散去，真相自会浮现。" },
+            { name: "The Empress (皇后)", meaning: "丰盈的生命力与创造力。", advice: "去感受自然与美的力量，你的计划正在稳步生根。" }
+        ];
+
+        function drawCard() {
+            document.getElementById('divination-area').classList.add('opacity-30', 'pointer-events-none');
+            document.getElementById('loading-text').classList.remove('hidden');
+            
+            setTimeout(() => {
+                const card = cards[Math.floor(Math.random() * cards.length)];
+                document.getElementById('divination-area').classList.add('hidden');
+                document.getElementById('result-screen').classList.remove('hidden');
+                document.getElementById('card-name').innerText = card.name;
+                document.getElementById('card-meaning').innerText = card.meaning;
+                document.getElementById('card-advice').innerText = card.advice;
+                document.getElementById('loading-text').classList.add('hidden');
+            }, 1500);
+        }
+
+        function resetApp() {
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('divination-area').classList.remove('hidden', 'opacity-30', 'pointer-events-none');
+        }
+    </script>
+</body>
+</html>
